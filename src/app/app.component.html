@@ -4,18 +4,34 @@
     <div class="col-12 col-xl-9">
       <div class="card rounded-0 shadow-sm">
         <div class="card-header d-flex justify-content-end align-middle py-1">
-          <button class="btn btn-sm btn-dark">Rename</button>
+          <button class="btn btn-sm btn-dark" (click)="toggleDisplay()">Rename</button>
         </div>
         <div class="overflow-auto" id="chat">
+          <div class="position-absolute col-12 pt-1" [hidden]="btnChangeClient">
+            <div class="input-group input-group-sm col-5 float-right px-0">
+              <input type="text" class="form-control" placeholder="new name" [(ngModel)]="clientname" maxlength="30">
+              <div class="input-group-append">
+                <button class="btn btn-secondary">Edit</button>
+              </div>
+            </div>
+          </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item border-0" *ngFor="let message of messages">
-              <span class="badge badge-pill badge-primary shadow-sm py-2 px-3">{{ message }}</span>
+            <li class="list-group-item align-middle border-0" *ngFor="let msg of messages"
+              [ngClass]="(client.id == msg.id) ? 'd-flex justify-content-end':'d-flex justify-content-start'">
+              <div>
+                <p class="d-block mb-1" *ngIf="client.id != msg.id">{{ msg.name }}</p>
+                <p class="badge badge-pill py-2 px-3 text-wrap"
+                  [ngClass]="(client.id == msg.id) ? 'badge-success':'badge-primary'">
+                  {{ msg.message }}
+                </p>
+              </div>
             </li>
           </ul>
         </div>
-        <div class="card-body border-top p-1">
+        <div class="card-body border-top py-2 px-3">
+          <small>limit: {{ message.length }}/100</small>
           <div class="input-group">
-            <input type="text" class="form-control" placeholder="Message" [(ngModel)]="message">
+            <input type="text" class="form-control" placeholder="Message" [(ngModel)]="message" maxlength="100">
             <div class="input-group-append">
               <button class="btn btn-secondary px-5" (click)="sendMessage()">Send</button>
             </div>
@@ -26,11 +42,11 @@
     <div class="col-12 col-xl-3">
       <div class="card rounded-0 shadow-sm h-100">
         <div class="card-header">
-          <small>online: {{ online }}</small>
+          <small>online: {{ clients.length }}</small>
         </div>
         <div class="overflow-auto h-100">
           <ul class="list-group list-group-flush">
-            <li class="list-group-item border-bottom py-1" *ngFor="let member of members">{{ member.name }}</li>
+            <li class="list-group-item border-bottom py-1" *ngFor="let client of clients">{{ client.name }}</li>
           </ul>
         </div>
       </div>

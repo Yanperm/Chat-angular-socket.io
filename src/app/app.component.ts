@@ -15,114 +15,104 @@ import Swal from 'sweetalert2';
 
 export class AppComponent implements OnInit {
 
-  public online: number;
-  public nickname: string;
-  public members: object[] = [];
-  public message: string;
-  public messages: object[] = [];
+  public online: number = 0;
+  public client: object;
+  public clientname: string;
+  public message: string = '';
+  public clients: Array<object> = [];
+  public messages: Array<object> = [];
 
+  public btnChangeClient: boolean = true;
 
   /**
-   *
+   * constructor
    * @param webSocketService
    */
   constructor(
     private webSocketService: WebSocketService
   ) {
+    //
     Swal.fire({
-      title: 'Enter Nickname?',
-      icon: 'info',
+      title: 'Enter Name!',
       input: 'text',
       inputValidator: (value) => {
         if (!value) {
           return 'You need to write something!'
         }
       },
+      inputPlaceholder: 'Enter Name',
       showConfirmButton: true,
       confirmButtonColor: '#3085d6',
       confirmButtonText: 'Enter',
       allowOutsideClick: false
     }).then((result) => {
       if (result.value) {
-        this.addNickname(result.value);
+        this.client = {
+          id: this.makeid(5),
+          name: result.value
+        };
+        this.clients.push(this.client);
+        this.online++;
+        this.webSocketService.emit('joinClient', this.client);
+        console.log('ID: ' + this.client['id'] + '\tClient Name: ' + this.client['name']);
       }
     });
   }
 
   ngOnInit() {
-    /**
-     * Event listMessage
-     */
-    this.webSocketService.listen('listMessage')
-      .subscribe((message: any) => {
-        console.log('List Message: ' + message);
+    // Event "responseMessage"
+    this.webSocketService.listen('responseMessage')
+      .subscribe((message: any): void => {
+        console.log('Response Message: ' + message);
         this.messages.push(message);
       });
-    console.log(this.messages);
-
-    /**
-     * Event newMember
-     */
-    this.webSocketService.listen('newMember')
-      .subscribe((member: any) => {
-        console.log('New Nickname: ' + member);
-        this.members.push(member);
+    // Event "newClient"
+    this.webSocketService.listen('newClient')
+      .subscribe((client: any): void => {
+        console.log('New Client: ' + client.name);
+        this.clients.push(client);
       });
-    console.log(this.members);
-
-    /**
-     * Event userOnline
-     */
-    this.webSocketService.listen('userOnline')
-      .subscribe((online: any) => {
-        console.log('Member Online: ' + online);
-        this.online = online;
+    // Event "clientOnline"
+    this.webSocketService.listen('clientOnline')
+      .subscribe((client_log: any): void => {
+        console.log('Client Online: ' + client_log.name);
+        this.clients = client_log;
       });
   }
 
   /**
-   * function addNickname
-   * @param nickname
+   * function "changeClientName"
    */
-  public addNickname(nickname: any): void {
-    console.log('New Nickname: ' + nickname);
-    let member = {
-      id: this.makeid(5),
-      name: nickname
-    }
-    this.nickname = nickname;
-    this.members.push(member);
-    this.webSocketService.emit('addNickname', member);
+  changeClientName(): void {
+    this.client['name'] = this.clientname;
+    console.log(`Change Name: ${this.client['name']} => ${this.clientname}`);
+    this.webSocketService.emit('changeName', this.client);
+  }
+
+  toggleDisplay() {
+    this.btnChangeClient = !this.btnChangeClient;
   }
 
   /**
-   * function changeNickname
-   * @param nickname
+   * function "sendMessage"
    */
-  public changeNickname(nickname: any): void {
-    console.log('Change Nickname: ' + nickname);
-  }
-
-  /**
-   * function sendMessage
-   */
-  public sendMessage(): void {
+  sendMessage(): void {
     console.log('Send Message: ' + this.message);
     let msg = {
-      id: this.makeid(5),
-      name: this.nickname,
-      message: this.message
+      id: this.client['id'],
+      message: this.message,
+      name: this.client['name']
     }
-    this.messages.push(msg);
     this.webSocketService.emit('sendMessage', msg);
+    this.messages.push(msg);
     this.message = '';
   }
 
   /**
-   * function makeid
+   * function "makeid"
    * @param length
    */
-  private makeid(length): string {
+  private makeid(length: number): string {
     let result: string = '';
     let characters: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let charactersLength: number = characters.length;
@@ -132,7 +122,13 @@ export class AppComponent implements OnInit {
     return result;
   }
 
-  private delmember() {
-
+  /**
+   * function "searchIndex"
+   * @param array
+   * @param search
+   */
+  private searchIndex(array: Array<string>, search: string): number {
+    let isLargeNumber = (element) => element.id == search;
+    return array.findIndex(isLargeNumber);
   }
 }
