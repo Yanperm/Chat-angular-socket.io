@@ -1,17 +1,17 @@
 <div class="container mt-5">
-  <h1 class="text-center">Chat Socket.io</h1>
+  <h1 class="text-center font-weight-bolder display-4">Chat Socket.io</h1>
   <div class="row">
     <div class="col-12 col-xl-9">
       <div class="card rounded-0 shadow-sm">
-        <div class="card-header d-flex justify-content-end align-middle py-1">
+        <div class="card-header rounded-0 bg-secondary d-flex justify-content-end align-middle py-1">
           <button class="btn btn-sm btn-dark" (click)="toggleDisplay()">Rename</button>
         </div>
         <div class="overflow-auto" id="chat">
-          <div class="position-absolute col-12 pt-1" [hidden]="btnChangeClient">
-            <div class="input-group input-group-sm col-5 float-right px-0">
+          <div class="position-absolute zindex col-12 pt-1" [hidden]="btnChangeClient">
+            <div class="input-group input-group-sm col-5 bg-dark shadow float-right p-1">
               <input type="text" class="form-control" placeholder="new name" [(ngModel)]="clientname" maxlength="30">
               <div class="input-group-append">
-                <button class="btn btn-secondary" (click)="changeClientName()">Edit</button>
+                <button class="btn btn-dark" (click)="changeClientName()">Edit</button>
               </div>
             </div>
           </div>
@@ -19,8 +19,8 @@
             <li class="list-group-item align-middle border-0 py-1" *ngFor="let msg of messages"
               [ngClass]="(client.id == msg.id) ? 'd-flex justify-content-end':'d-flex justify-content-start'">
               <div>
-                <p class="d-block mb-1" *ngIf="client.id != msg.id">{{ msg.name }}</p>
-                <p class="badge badge-pill py-2 px-3 text-wrap mb-0"
+                <span class="d-block mb-0 px-2 titlemessage" [ngClass]="(client.id == msg.id) ? 'text-right':'text-left'">{{ msg.name }}</span>
+                <p class="badge badge-pill py-1 px-3 text-wrap mb-0 titlecontent"
                   [ngClass]="(client.id == msg.id) ? 'badge-success':'badge-primary'">
                   {{ msg.message }}
                 </p>
@@ -29,11 +29,11 @@
           </ul>
         </div>
         <div class="card-body border-top py-2 px-3">
-          <small>limit: {{ message.length }}/100</small>
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Message" [(ngModel)]="message" maxlength="100">
+          <div class="input-group input-group-lg">
+            <small class="position-absolute zindex mlength pl-3 pb-0">{{ message.length }}/50</small>
+            <input type="text" class="form-control pt-3 pb-4" placeholder="message..." [(ngModel)]="message" maxlength="50">
             <div class="input-group-append">
-              <button class="btn btn-secondary px-5" (click)="sendMessage()">Send</button>
+              <button class="btn btn-dark rounded-0 px-5" (click)="sendMessage()" [disabled]="!message">Send</button>
             </div>
           </div>
         </div>
@@ -41,8 +41,8 @@
     </div>
     <div class="col-12 col-xl-3">
       <div class="card rounded-0 shadow-sm h-100">
-        <div class="card-header">
-          <small>online: {{ clients.length }}</small>
+        <div class="card-header rounded-0 bg-secondary py-2">
+          <small class="text-white">online: {{ clients.length }}</small>
         </div>
         <div class="overflow-auto h-100">
           <ul class="list-group list-group-flush">

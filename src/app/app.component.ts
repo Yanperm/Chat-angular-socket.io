@@ -55,7 +55,6 @@ export class AppComponent implements OnInit {
         this.clients.push(this.client);
         this.online++;
         this.webSocketService.emit('joinClient', this.client);
-        console.log('ID: ' + this.client['id'] + '\tClient Name: ' + this.client['name']);
       }
     });
   }
@@ -67,19 +66,16 @@ export class AppComponent implements OnInit {
     // Event "responseMessage"
     this.webSocketService.listen('responseMessage')
       .subscribe((message: any): void => {
-        console.log('Response Message: ' + message);
         this.messages.push(message);
       });
     // Event "newClient"
-    this.webSocketService.listen('newClient')
-      .subscribe((client: any): void => {
-        console.log('New Client: ' + client.name);
-        this.clients.push(client);
+    this.webSocketService.listen('changeName')
+      .subscribe((client_log: any): void => {
+        this.clients = client_log;
       });
     // Event "clientOnline"
     this.webSocketService.listen('clientOnline')
       .subscribe((client_log: any): void => {
-        console.log('Client Online: ' + client_log.name);
         this.clients = client_log;
       });
   }
@@ -89,8 +85,8 @@ export class AppComponent implements OnInit {
    */
   changeClientName(): void {
     this.client['name'] = this.clientname;
-    console.log(`Change Name: ${this.client['name']} => ${this.clientname}`);
-    this.webSocketService.emit('changeName', this.client);
+    this.webSocketService.emit('changeClient', this.clientname);
+    this.clientname = '';
     this.toggleDisplay();
   }
 
@@ -105,7 +101,6 @@ export class AppComponent implements OnInit {
    * function "sendMessage"
    */
   sendMessage(): void {
-    console.log('Send Message: ' + this.message);
     let msg = {
       id: this.client['id'],
       message: this.message,

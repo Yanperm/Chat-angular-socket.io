@@ -3,6 +3,21 @@
   height: 500px;
 }
 
-#chat .position-absolute {
+.zindex {
   z-index: 9999;
+}
+
+.titlemessage {
+  font-size: 12px;
+}
+
+.titlecontent {
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.mlength {
+  right: 150px;
+  bottom: 0px;
+  font-size: 10px;
 }
