@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
   constructor(
     private webSocketService: WebSocketService
   ) {
-    //
+    // sweetalert2
     Swal.fire({
       title: 'Enter Name!',
       input: 'text',
@@ -47,6 +47,7 @@ export class AppComponent implements OnInit {
       allowOutsideClick: false
     }).then((result) => {
       if (result.value) {
+        // New Client
         this.client = {
           id: this.makeid(5),
           name: result.value
@@ -59,7 +60,10 @@ export class AppComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  /**
+   * function "ngOnInit"
+   */
+  ngOnInit(): void {
     // Event "responseMessage"
     this.webSocketService.listen('responseMessage')
       .subscribe((message: any): void => {
@@ -89,7 +93,10 @@ export class AppComponent implements OnInit {
     this.webSocketService.emit('changeName', this.client);
   }
 
-  toggleDisplay() {
+  /**
+   * function "toggleDisplay"
+   */
+  toggleDisplay(): void {
     this.btnChangeClient = !this.btnChangeClient;
   }
 
@@ -120,15 +127,5 @@ export class AppComponent implements OnInit {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
-  }
-
-  /**
-   * function "searchIndex"
-   * @param array
-   * @param search
-   */
-  private searchIndex(array: Array<string>, search: string): number {
-    let isLargeNumber = (element) => element.id == search;
-    return array.findIndex(isLargeNumber);
   }
 }
