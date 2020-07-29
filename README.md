@@ -1,6 +1,6 @@
 # SocketIoFrontEnd
 
 ````
-npm i
-ng serve -o //start port 4200
+$ npm install
+$ ng serve -o //start port 4200
 ````
