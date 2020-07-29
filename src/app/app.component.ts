@@ -91,6 +91,7 @@ export class AppComponent implements OnInit {
     this.client['name'] = this.clientname;
     console.log(`Change Name: ${this.client['name']} => ${this.clientname}`);
     this.webSocketService.emit('changeName', this.client);
+    this.toggleDisplay();
   }
 
   /**

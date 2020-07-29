@@ -11,16 +11,16 @@
             <div class="input-group input-group-sm col-5 float-right px-0">
               <input type="text" class="form-control" placeholder="new name" [(ngModel)]="clientname" maxlength="30">
               <div class="input-group-append">
-                <button class="btn btn-secondary">Edit</button>
+                <button class="btn btn-secondary" (click)="changeClientName()">Edit</button>
               </div>
             </div>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item align-middle border-0" *ngFor="let msg of messages"
+            <li class="list-group-item align-middle border-0 py-1" *ngFor="let msg of messages"
               [ngClass]="(client.id == msg.id) ? 'd-flex justify-content-end':'d-flex justify-content-start'">
               <div>
                 <p class="d-block mb-1" *ngIf="client.id != msg.id">{{ msg.name }}</p>
-                <p class="badge badge-pill py-2 px-3 text-wrap"
+                <p class="badge badge-pill py-2 px-3 text-wrap mb-0"
                   [ngClass]="(client.id == msg.id) ? 'badge-success':'badge-primary'">
                   {{ msg.message }}
                 </p>
